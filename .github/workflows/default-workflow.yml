@@ -4,8 +4,7 @@ on:
   push:
   pull_request:
   schedule:
-    # Every day at 23:00:00 (not sure if this is the right time, but we will see
-    - cron: '0 * 23 ? * * *'
+    - cron: '0 23 * * *'
 
 jobs:
   fetch-data:
