@@ -1,6 +1,9 @@
-name: Java CI
+name: Python CI
 
 on: [push, pull_request]
+  schedule:
+    # Every day at 23:00:00 (not sure if this is the right time, but we will see
+    - cron: '0 * 23 ? * * *'
 
 jobs:
   fetch-data:
@@ -19,3 +22,9 @@ jobs:
         run: python -m pip install "pandas==1.4.2"
       - name: Fetch data
         run: python download_script.py
+      - uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: build/
+          if-no-files-found: error
+
