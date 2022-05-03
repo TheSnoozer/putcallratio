@@ -20,7 +20,7 @@ jobs:
       - name: Display Python version
         run: python --version
       - name: Install dependencies
-        run: python -m pip install "pandas==1.4.2"
+        run: python -m pip install "pandas==1.4.2" "requests==2.27.1"
       - name: Fetch data
         run: python download_script.py
       - uses: actions/upload-artifact@v3
