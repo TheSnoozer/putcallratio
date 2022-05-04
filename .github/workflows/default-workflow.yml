@@ -27,6 +27,12 @@ jobs:
           name: artifacts
           path: build/
           if-no-files-found: error
+      - name: See where we are
+        shell: bash
+        working_directory: ~/workdir
+        run: |
+          pwd
+          ls -lah
       - name: Set up the SSH key and the known_hosts file
         shell: bash
         run: |
