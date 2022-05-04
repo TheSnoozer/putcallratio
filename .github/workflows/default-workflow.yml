@@ -29,7 +29,6 @@ jobs:
           if-no-files-found: error
       - name: See where we are
         shell: bash
-        working_directory: ~/workdir
         run: |
           pwd
           ls -lah
@@ -42,8 +41,9 @@ jobs:
           mkdir -p ~/.ssh
       - name: Configure git
         shell: bash
-        working_directory: ~/workdir
         run: |
+          mkdir -p ~/workdir
+          cd workdir
           git config --global user.email "no-reply@github.com"
           git config --global user.name "ci-build@github.com"
           git clone --depth 1 git@github.com:TheSnoozer/putcallratio.git
