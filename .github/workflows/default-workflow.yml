@@ -42,6 +42,7 @@ jobs:
       - name: Configure git
         shell: bash
         run: |
+          CI_WORK_DIR=`pwd`
           mkdir -p ~/workdir
           cd ~/workdir
           git config --global user.email "no-reply@github.com"
@@ -49,9 +50,9 @@ jobs:
           git clone --depth 1 --branch data git@github.com:TheSnoozer/putcallratio.git
           cd putcallratio
           TODAY=$(date "+%Y-%m-%d")
-          cp build/total_options.html ${TODAY}_datatotal.html
-          cp build/index_options.html ${TODAY}_dataindex.html
-          cp build/equity_options.html ${TODAY}_dataequity.html
+          cp ${CI_WORK_DIR}/build/total_options.html ${TODAY}_datatotal.html
+          cp ${CI_WORK_DIR}/build/index_options.html ${TODAY}_dataindex.html
+          cp ${CI_WORK_DIR}/build/equity_options.html ${TODAY}_dataequity.html
           git add ${TODAY}_datatotal.html ${TODAY}_dataindex.html ${TODAY}_dataequity.html
           git commit -m "Add data for ${TODAY}"
           git push origin -o ci.skip -q
