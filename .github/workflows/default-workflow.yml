@@ -43,7 +43,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p ~/workdir
-          cd workdir
+          cd ~/workdir
           git config --global user.email "no-reply@github.com"
           git config --global user.name "ci-build@github.com"
           git clone --depth 1 git@github.com:TheSnoozer/putcallratio.git
