@@ -33,10 +33,11 @@ jobs:
           pwd
           ls -lah
       - name: Set up the SSH key and the known_hosts file
-        shell: bash
-        run: |
-          echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add - > /dev/null
-          mkdir -p ~/.ssh
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          name: id_rsa
+          if_key_exists: fail
       - name: Configure git
         shell: bash
         run: |
