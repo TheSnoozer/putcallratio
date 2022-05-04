@@ -37,6 +37,7 @@ jobs:
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           name: id_rsa
+          known_hosts: ""
           if_key_exists: fail
       - name: Configure git
         shell: bash
