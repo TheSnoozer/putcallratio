@@ -45,8 +45,8 @@ jobs:
           CI_WORK_DIR=`pwd`
           mkdir -p ~/workdir
           cd ~/workdir
-          git config --global user.email "no-reply@github.com"
-          git config --global user.name "ci-build@github.com"
+          git config --global user.email "6849390+TheSnoozer@users.noreply.github.com"
+          git config --global user.name "GithubActions CI (via TheSnoozer)"
           git clone --depth 1 --branch data git@github.com:TheSnoozer/putcallratio.git
           cd putcallratio
           TODAY=$(date "+%Y-%m-%d")
