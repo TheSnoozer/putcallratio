@@ -60,6 +60,7 @@ jobs:
           [[ ! -e "equity_options.csv" ]] && touch "equity_options.csv"
           join -1 1 -2 1 -t $'\t' ${CI_WORK_DIR}/build/equity_options.csv ./equity_options.csv > ./equity_options.csv
           # Add files and commit
+          [[ -n $(git status --porcelain) ]] || (echo "Nothing to commit!" && exit 0)
           git add total_options.csv index_options.csv equity_options.csv
           git commit -m "Add data for ${TODAY}"
           git push origin -o ci.skip -q
