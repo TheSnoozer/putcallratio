@@ -12,14 +12,6 @@ def polish_time_index(extracted_date, df):
     df.index = pd.to_datetime(df.index, format="%Y-%m-%d %I:%M %p")
 
 
-def dump_put_call_ratio(extracted_date, dump_dir, raw_data):
-    the_html = html.tostring(raw_data)
-    df = pd.read_html(the_html, index_col=0)[0]
-    df.drop(['CALLS', 'PUTS', 'TOTAL'], axis=1, inplace=True)
-    polish_time_index(extracted_date, df)
-    df.to_csv(dump_dir / "PCC.csv", sep="\t", encoding="utf-8")
-
-
 def dump_data(extracted_date, dump_dir, f_name_prefix, raw_data):
     the_html = html.tostring(raw_data)
     with open(dump_dir / (f_name_prefix + ".html"), mode="w", encoding="utf-8") as fd:
@@ -52,7 +44,6 @@ def main():
             raw_data[5].text == "Index Options" and
             raw_data[7].text == "Equity Options"
     ):
-        dump_put_call_ratio(extracted_date, build_artifacts, raw_data[4])
         dump_data(extracted_date, build_artifacts, "total_options", raw_data[4])
         dump_data(extracted_date, build_artifacts, "index_options", raw_data[6])
         dump_data(extracted_date, build_artifacts, "equity_options", raw_data[8])
