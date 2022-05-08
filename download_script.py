@@ -18,7 +18,7 @@ def dump_data(extracted_date, dump_dir, f_name_prefix, raw_data):
         fd.write(the_html.decode("utf-8"))
     df = pd.read_html(the_html, index_col=0)[0]
     polish_time_index(extracted_date, df)
-    df.to_csv(dump_dir / (f_name_prefix + ".csv"), sep="\t", encoding="utf-8")
+    df.to_csv(dump_dir / (f_name_prefix + ".tsv"), sep="\t", encoding="utf-8")
 
 
 def main():

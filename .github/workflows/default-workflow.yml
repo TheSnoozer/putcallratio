@@ -51,22 +51,22 @@ jobs:
           cd putcallratio
           TODAY=$(date "+%Y-%m-%d")
           # Merge total_options
-          [[ ! -e "total_options.csv" ]] && cp "${CI_WORK_DIR}"/build/total_options.csv .
-          join -1 1 -2 1 -t $'\t' "${CI_WORK_DIR}"/build/total_options.csv total_options.csv > tmp_total_options.csv
-          mv tmp_total_options.csv total_options.csv
+          [[ ! -e "total_options.tsv" ]] && cp "${CI_WORK_DIR}"/build/total_options.tsv .
+          join -1 1 -2 1 -t $'\t' "${CI_WORK_DIR}"/build/total_options.tsv total_options.tsv > tmp_total_options.tsv
+          mv tmp_total_options.tsv total_options.tsv
 
           # Merge index_options
-          [[ ! -e "index_options.csv" ]] && cp "${CI_WORK_DIR}"/build/index_options.csv .
-          join -1 1 -2 1 -t $'\t' "${CI_WORK_DIR}"/build/index_options.csv index_options.csv > tmp_index_options.csv
-          mv tmp_index_options.csv index_options.csv
+          [[ ! -e "index_options.tsv" ]] && cp "${CI_WORK_DIR}"/build/index_options.tsv .
+          join -1 1 -2 1 -t $'\t' "${CI_WORK_DIR}"/build/index_options.tsv index_options.tsv > tmp_index_options.tsv
+          mv tmp_index_options.tsv index_options.tsv
 
           # Merge equity_options
-          [[ ! -e "equity_options.csv" ]] && cp "${CI_WORK_DIR}"/build/equity_options.csv .
-          join -1 1 -2 1 -t $'\t' "${CI_WORK_DIR}"/build/equity_options.csv equity_options.csv > tmp_equity_options.csv
-          mv tmp_equity_options.csv equity_options.csv
+          [[ ! -e "equity_options.tsv" ]] && cp "${CI_WORK_DIR}"/build/equity_options.tsv .
+          join -1 1 -2 1 -t $'\t' "${CI_WORK_DIR}"/build/equity_options.tsv equity_options.tsv > tmp_equity_options.tsv
+          mv tmp_equity_options.tsv equity_options.tsv
 
           # Add files and commit
           [[ -n $(git status --porcelain) ]] || (echo "Nothing to commit!" && exit 0)
-          git add total_options.csv index_options.csv equity_options.csv
+          git add total_options.tsv index_options.tsv equity_options.tsv
           git commit -m "Add data for ${TODAY}"
           git push origin -o ci.skip -q
