@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '0 23 * * *'
+    - cron: '0 23 * * 1,2,3,4,5'
 
 jobs:
   fetch-data:
