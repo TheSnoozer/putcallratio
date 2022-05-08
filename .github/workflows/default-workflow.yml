@@ -50,9 +50,16 @@ jobs:
           git clone --depth 1 --branch data git@github.com:TheSnoozer/putcallratio.git
           cd putcallratio
           TODAY=$(date "+%Y-%m-%d")
-          cp ${CI_WORK_DIR}/build/total_options.html ${TODAY}_datatotal.html
-          cp ${CI_WORK_DIR}/build/index_options.html ${TODAY}_dataindex.html
-          cp ${CI_WORK_DIR}/build/equity_options.html ${TODAY}_dataequity.html
-          git add ${TODAY}_datatotal.html ${TODAY}_dataindex.html ${TODAY}_dataequity.html
+          # Merge total_options
+          if [[ ! -e "total_options.csv" ]] ; then touch "total_options.csv" fi
+          join -1 1 -2 1 -t $'\t' ${CI_WORK_DIR}/build/total_options.csv ./total_options.csv > ./total_options.csv
+          # Merge index_options
+          if [[ ! -e "index_options.csv" ]] ; then touch "index_options.csv" fi
+          join -1 1 -2 1 -t $'\t' ${CI_WORK_DIR}/build/index_options.csv ./index_options.csv > ./index_options.csv
+          # Merge equity_options
+          if [[ ! -e "equity_options.csv" ]] ; then touch "equity_options.csv" fi
+          join -1 1 -2 1 -t $'\t' ${CI_WORK_DIR}/build/equity_options.csv ./equity_options.csv > ./equity_options.csv
+          # Add files and commit
+          git add total_options.csv index_options.csv equity_options.csv
           git commit -m "Add data for ${TODAY}"
           git push origin -o ci.skip -q
