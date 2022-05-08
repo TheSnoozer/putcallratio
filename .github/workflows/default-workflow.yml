@@ -51,14 +51,14 @@ jobs:
           cd putcallratio
           TODAY=$(date "+%Y-%m-%d")
           # Merge total_options
-          [[ ! -e "total_options.csv" ]] && touch "total_options.csv"
-          join -1 1 -2 1 -t $'\t' ${CI_WORK_DIR}/build/total_options.csv ./total_options.csv > ./total_options.csv
+          [[ ! -e "total_options.csv" ]] && cp "${CI_WORK_DIR}"/build/total_options.csv .
+          [[   -e "total_options.csv" ]] && join -1 1 -2 1 -t $'\t' "${CI_WORK_DIR}"/build/total_options.csv total_options.csv > total_options.csv
           # Merge index_options
-          [[ ! -e "index_options.csv" ]] && touch "index_options.csv"
-          join -1 1 -2 1 -t $'\t' ${CI_WORK_DIR}/build/index_options.csv ./index_options.csv > ./index_options.csv
+          [[ ! -e "index_options.csv" ]] && cp "${CI_WORK_DIR}"/build/index_options.csv .
+          [[   -e "index_options.csv" ]] && join -1 1 -2 1 -t $'\t' "${CI_WORK_DIR}"/build/index_options.csv index_options.csv > index_options.csv
           # Merge equity_options
-          [[ ! -e "equity_options.csv" ]] && touch "equity_options.csv"
-          join -1 1 -2 1 -t $'\t' ${CI_WORK_DIR}/build/equity_options.csv ./equity_options.csv > ./equity_options.csv
+          [[ ! -e "equity_options.csv" ]] && cp "${CI_WORK_DIR}"/build/equity_options.csv .
+          [[   -e "equity_options.csv" ]] && join -1 1 -2 1 -t $'\t' "${CI_WORK_DIR}"/build/equity_options.csv equity_options.csv > equity_options.csv
           # Add files and commit
           [[ -n $(git status --porcelain) ]] || (echo "Nothing to commit!" && exit 0)
           git add total_options.csv index_options.csv equity_options.csv
