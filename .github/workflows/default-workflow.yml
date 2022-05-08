@@ -52,17 +52,17 @@ jobs:
           TODAY=$(date "+%Y-%m-%d")
           # Merge total_options
           [[ ! -e "total_options.tsv" ]] && cp "${CI_WORK_DIR}"/build/total_options.tsv .
-          join -1 1 -2 1 -t $'\t' "${CI_WORK_DIR}"/build/total_options.tsv total_options.tsv > tmp_total_options.tsv
+          awk 'FNR==1 && NR!=1{next;}{print}' "${CI_WORK_DIR}"/build/total_options.tsv total_options.tsv | awk '!seen[$0]++' > tmp_total_options.tsv
           mv tmp_total_options.tsv total_options.tsv
 
           # Merge index_options
           [[ ! -e "index_options.tsv" ]] && cp "${CI_WORK_DIR}"/build/index_options.tsv .
-          join -1 1 -2 1 -t $'\t' "${CI_WORK_DIR}"/build/index_options.tsv index_options.tsv > tmp_index_options.tsv
+          awk 'FNR==1 && NR!=1{next;}{print}' "${CI_WORK_DIR}"/build/index_options.tsv index_options.tsv | awk '!seen[$0]++' > tmp_index_options.tsv
           mv tmp_index_options.tsv index_options.tsv
 
           # Merge equity_options
           [[ ! -e "equity_options.tsv" ]] && cp "${CI_WORK_DIR}"/build/equity_options.tsv .
-          join -1 1 -2 1 -t $'\t' "${CI_WORK_DIR}"/build/equity_options.tsv equity_options.tsv > tmp_equity_options.tsv
+          awk 'FNR==1 && NR!=1{next;}{print}' "${CI_WORK_DIR}"/build/equity_options.tsv equity_options.tsv | awk '!seen[$0]++' > tmp_equity_options.tsv
           mv tmp_equity_options.tsv equity_options.tsv
 
           # Add files and commit
