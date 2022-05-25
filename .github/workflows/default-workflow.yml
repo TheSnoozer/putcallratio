@@ -25,7 +25,7 @@ jobs:
         with:
           timeout_seconds: 120
           max_attempts: 5
-          retry_on: timeout
+          retry_on: error
           command: python download_script.py
       - uses: actions/upload-artifact@v3
         with:
