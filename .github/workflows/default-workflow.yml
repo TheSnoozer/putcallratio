@@ -21,17 +21,17 @@ jobs:
       - name: Install dependencies
         run: python -m pip install "pandas==1.4.2" "requests==2.27.1" "lxml==4.8.0"
       - name: Fetch data
-        run: python download_script.py
+        uses: nick-fields/retry@v2
+        with:
+          timeout_seconds: 120
+          max_attempts: 5
+          retry_on: timeout
+          command: python download_script.py
       - uses: actions/upload-artifact@v3
         with:
           name: artifacts
           path: build/
           if-no-files-found: error
-      - name: See where we are
-        shell: bash
-        run: |
-          pwd
-          ls -lah
       - name: Set up the SSH key and the known_hosts file
         uses: shimataro/ssh-key-action@v2.3.1
         with:

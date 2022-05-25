@@ -17,6 +17,8 @@ def dump_data(extracted_date, dump_dir, f_name_prefix, raw_data):
     with open(dump_dir / (f_name_prefix + ".html"), mode="w", encoding="utf-8") as fd:
         fd.write(the_html.decode("utf-8"))
     df = pd.read_html(the_html, index_col=0)[0]
+    if df.isnull().values.any():
+        raise ValueError(f"extracted dataframe contains unexpected NaN values: {df}")
     polish_time_index(extracted_date, df)
     df.to_csv(dump_dir / (f_name_prefix + ".tsv"), sep="\t", encoding="utf-8")
 
