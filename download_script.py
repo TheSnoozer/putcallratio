@@ -41,6 +41,10 @@ def main():
     extracted_date = datetime.strptime(extracted_date_str, "%A, %B %d, %Y").date()
 
     raw_data = content.xpath("/html/body/main/section[2]/div")[0]
+    raw_data_as_html = html.tostring(raw_data)
+
+    with open(build_artifacts / f"{extracted_date}_market_statistics.html", mode="w", encoding="utf-8") as fd:
+        fd.write(raw_data_as_html.decode("utf-8"))
 
     if (
             len(raw_data) == 9 and
@@ -52,7 +56,6 @@ def main():
         dump_data(extracted_date, build_artifacts, "index_options", raw_data[6])
         dump_data(extracted_date, build_artifacts, "equity_options", raw_data[8])
     else:
-        raw_data_as_html = html.tostring(raw_data)
         # The page structure is different to what we assume
         raise ValueError("Unable to parse: " + raw_data_as_html)
 
