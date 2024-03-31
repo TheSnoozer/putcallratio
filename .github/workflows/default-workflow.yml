@@ -42,6 +42,7 @@ jobs:
           if_key_exists: fail
       - name: Configure git
         shell: bash
+        if: ${{ github.event_name == 'schedule' }}
         run: |
           CI_WORK_DIR=`pwd`
           mkdir -p ~/workdir
