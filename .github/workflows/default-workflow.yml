@@ -51,6 +51,7 @@ jobs:
           git clone --depth 1 --branch data git@github.com:TheSnoozer/putcallratio.git
           cd putcallratio
           TODAY=$(date "+%Y-%m-%d")
+          CURR_YEAR=$(date "+%Y")
           # Merge total_options
           [[ ! -e "total_options.tsv" ]] && cp "${CI_WORK_DIR}"/build/total_options.tsv .
           awk 'FNR==1 && NR!=1{next;}{print}' "${CI_WORK_DIR}"/build/total_options.tsv total_options.tsv | awk '!seen[$0]++' > tmp_total_options.tsv
@@ -66,8 +67,12 @@ jobs:
           awk 'FNR==1 && NR!=1{next;}{print}' "${CI_WORK_DIR}"/build/equity_options.tsv equity_options.tsv | awk '!seen[$0]++' > tmp_equity_options.tsv
           mv tmp_equity_options.tsv equity_options.tsv
 
+          # Raw data
+          mkdir -p "${CI_WORK_DIR}"/raw/"${CURR_YEAR}"
+          cp "${CI_WORK_DIR}"/build/${TODAY}_market_statistics.html "${CI_WORK_DIR}"/raw/"${CURR_YEAR}"
+
           # Add files and commit
           [[ -n $(git status --porcelain) ]] || (echo "Nothing to commit!" && exit 0)
-          git add total_options.tsv index_options.tsv equity_options.tsv
+          git add total_options.tsv index_options.tsv equity_options.tsv raw
           git commit -m "Add data for ${TODAY}"
           git push origin -o ci.skip -q
