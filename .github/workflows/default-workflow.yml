@@ -19,7 +19,7 @@ jobs:
       - name: Display Python version
         run: python --version
       - name: Install dependencies
-        run: python -m pip install "pandas==1.4.2" "requests==2.27.1" "lxml==4.8.0"
+        run: python -m pip install -r requirements.txt
       - name: Fetch data
         uses: nick-fields/retry@v3
         with:
