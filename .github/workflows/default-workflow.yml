@@ -35,6 +35,7 @@ jobs:
           if-no-files-found: error
       - name: Set up the SSH key and the known_hosts file
         uses: shimataro/ssh-key-action@v2.7.0
+        if: ${{ github.event_name == 'schedule' }}
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           name: id_rsa
