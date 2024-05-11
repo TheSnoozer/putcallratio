@@ -2,6 +2,7 @@
 
 A naïve project to fetch the CBOE Put/Call Market Data automatically.
 
+Some historical data can be found in the "data"-branch of the project.
 
 Risk Disclosure
 ====
