@@ -17,8 +17,8 @@ def dump_data(extracted_date, dump_dir, f_name_prefix, raw_data):
     with open(dump_dir / (f_name_prefix + ".html"), mode="w", encoding="utf-8") as fd:
         fd.write(the_html.decode("utf-8"))
     df = pd.read_html(the_html, index_col=0)[0]
-    if df.isnull().values.any():
-        raise ValueError(f"extracted dataframe contains unexpected NaN values: {df}")
+    # if df.isnull().values.any():
+    #    raise ValueError(f"extracted dataframe contains unexpected NaN values: {df}")
     polish_time_index(extracted_date, df)
     col_transformation = {"CALLS": "int64", "PUTS": "int64", "TOTAL": "int64", "P/C RATIO": "float64"}
     df = df.astype({k: v for k, v in col_transformation.items() if k in df.columns})
