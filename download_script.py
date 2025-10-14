@@ -42,28 +42,33 @@ def main():
     content = html.fromstring(page.content)
 
     # raw_data
-    extracted_date_str = content.xpath("/html/body/main/section[2]/div/h1/text()")[0]
-    extracted_date_str = extracted_date_str.replace("Cboe Exchange Market Statistics for ", "")
-    extracted_date = datetime.strptime(extracted_date_str, "%A, %B %d, %Y").date()
+    try:
+        extracted_date_str = content.xpath("/html/body/main/section[2]/div/h1/text()")[0]
+        extracted_date_str = extracted_date_str.replace("Cboe Exchange Market Statistics for ", "")
+        extracted_date = datetime.strptime(extracted_date_str, "%A, %B %d, %Y").date()
 
-    raw_data = content.xpath("/html/body/main/section[2]/div")[0]
-    raw_data_as_html = html.tostring(raw_data)
+        raw_data = content.xpath("/html/body/main/section[2]/div")[0]
+        raw_data_as_html = html.tostring(raw_data)
 
-    with open(build_artifacts / f"{extracted_date}_market_statistics.html", mode="w", encoding="utf-8") as fd:
-        fd.write(raw_data_as_html.decode("utf-8"))
+        with open(build_artifacts / f"{extracted_date}_market_statistics.html", mode="w", encoding="utf-8") as fd:
+            fd.write(raw_data_as_html.decode("utf-8"))
 
-    if (
-            len(raw_data) == 9 and
-            raw_data[3].text == "Total" and
-            raw_data[5].text == "Index Options" and
-            raw_data[7].text == "Equity Options"
-    ):
-        dump_data(extracted_date, build_artifacts, "total_options", raw_data[4])
-        dump_data(extracted_date, build_artifacts, "index_options", raw_data[6])
-        dump_data(extracted_date, build_artifacts, "equity_options", raw_data[8])
-    else:
+        if (
+                len(raw_data) == 9 and
+                raw_data[3].text == "Total" and
+                raw_data[5].text == "Index Options" and
+                raw_data[7].text == "Equity Options"
+        ):
+            dump_data(extracted_date, build_artifacts, "total_options", raw_data[4])
+            dump_data(extracted_date, build_artifacts, "index_options", raw_data[6])
+            dump_data(extracted_date, build_artifacts, "equity_options", raw_data[8])
+        else:
+            # The page structure is different to what we assume
+            raise ValueError(f"Unable to parse: {raw_data_as_html=}")
+    except IndexError as index_error:
         # The page structure is different to what we assume
-        raise ValueError("Unable to parse: " + raw_data_as_html)
+        # Accessing content.xpath("...")[0] likely has caused this issue
+        raise ValueError(f"Unable to parse: {content=}") from index_error
 
 
 if __name__ == "__main__":
