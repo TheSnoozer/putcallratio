@@ -68,7 +68,7 @@ def main():
     except IndexError as index_error:
         # The page structure is different to what we assume
         # Accessing content.xpath("...")[0] likely has caused this issue
-        raise ValueError(f"Unable to parse: {content=}") from index_error
+        raise ValueError(f"Unable to parse: {page.content=}") from index_error
 
 
 if __name__ == "__main__":
