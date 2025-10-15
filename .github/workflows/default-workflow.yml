@@ -5,6 +5,7 @@ on:
   pull_request:
   schedule:
     - cron: '0 23 * * 1,2,3,4,5'
+  workflow_dispatch:  # enables manual trigger from the Actions tab
 
 jobs:
   fetch-data:
