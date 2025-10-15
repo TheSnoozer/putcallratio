@@ -38,7 +38,8 @@ def main():
 
     build_artifacts.mkdir()
 
-    page = requests.get("https://www.cboe.com/us/options/market_statistics/")
+    # https://www.cboe.com/us/options/market_statistics/
+    page = requests.get("https://ww2.cboe.com/us/options/market_statistics")
     content = html.fromstring(page.content)
 
     # raw_data
