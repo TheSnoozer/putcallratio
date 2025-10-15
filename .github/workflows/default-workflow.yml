@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-            python-version: '3.12.2'
+            python-version: '3.13.8'
             architecture: 'x64'
       - name: Display Python version
         run: python --version
@@ -78,6 +78,6 @@ jobs:
 
           # Add files and commit
           [[ -n $(git status --porcelain) ]] || (echo "Nothing to commit!" && exit 0)
-          git add "${CURR_YEAR}"  
+          git add "${CURR_YEAR}"
           git commit -m "Add data for ${TODAY}"
           git push origin -o ci.skip -q
