@@ -36,7 +36,7 @@ jobs:
           if-no-files-found: error
       - name: Set up the SSH key and the known_hosts file
         uses: shimataro/ssh-key-action@v2.7.0
-        if: ${{ github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           name: id_rsa
@@ -44,7 +44,7 @@ jobs:
           if_key_exists: fail
       - name: Configure git
         shell: bash
-        if: ${{ github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         run: |
           CI_WORK_DIR=`pwd`
           mkdir -p ~/workdir
