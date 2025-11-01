@@ -29,7 +29,7 @@ jobs:
           max_attempts: 5
           retry_on: error
           command: python download_script.py
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: artifacts
           path: build/
