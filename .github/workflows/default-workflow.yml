@@ -35,7 +35,7 @@ jobs:
           path: build/
           if-no-files-found: error
       - name: Set up the SSH key and the known_hosts file
-        uses: shimataro/ssh-key-action@v2.7.0
+        uses: shimataro/ssh-key-action@v2.8.0
         if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
