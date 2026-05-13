@@ -12,12 +12,18 @@ def polish_time_index(extracted_date, df):
     df.index = pd.to_datetime(df.index, format="%Y-%m-%d %I:%M %p")
 
 
-def dump_data(extracted_date, dump_dir, f_name_prefix, raw_data):
-    the_html = html.tostring(raw_data)
-    the_html_str = the_html.decode("utf-8")
-    with open(dump_dir / (f_name_prefix + ".html"), mode="w", encoding="utf-8") as fd:
+def dump_data(
+    extracted_date,
+    dump_dir: Path,
+    f_name_prefix: str,
+    raw_data,
+):
+    the_html: bytes = html.tostring(raw_data)
+    the_html_str: str = the_html.decode("utf-8")
+    html_path: Path = dump_dir / (f_name_prefix + ".html")
+    with open(html_path, mode="w", encoding="utf-8") as fd:
         fd.write(the_html_str)
-    df = pd.read_html(the_html_str, index_col=0)[0]
+    df = pd.read_html(html_path, index_col=0)[0]
     # df = df.fillna(0)
     df = df.dropna()
     # if df.isnull().values.any():
