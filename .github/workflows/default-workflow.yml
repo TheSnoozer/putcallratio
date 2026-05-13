@@ -53,9 +53,10 @@ jobs:
           git config --global user.name "GithubActions CI (via TheSnoozer)"
           git clone --depth 1 --branch data git@github.com:TheSnoozer/putcallratio.git
           cd putcallratio
-          TODAY=$(date "+%Y-%m-%d")
-          CURR_YEAR=$(date "+%Y")
-          CURR_MONTH=$(date "+%m")
+          # Extract date from the actual file created by download_script.py
+          TODAY=$(ls "${CI_WORK_DIR}"/build/*_market_statistics.html | head -1 | xargs basename | sed 's/_market_statistics.html//')
+          CURR_YEAR=$(date -d "${TODAY}" "+%Y")
+          CURR_MONTH=$(date -d "${TODAY}" "+%m")
           mkdir -p "${CURR_YEAR}"
           # Merge total_options
           [[ ! -e "${CURR_YEAR}/total_options.tsv" ]] && cp "${CI_WORK_DIR}"/build/total_options.tsv ./"${CURR_YEAR}"
