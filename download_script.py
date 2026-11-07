@@ -1,41 +1,41 @@
 #!/usr/bin/env python
+import json
+
 import pandas as pd
 import requests
 from datetime import datetime
-from lxml import html
 from pathlib import Path
 from shutil import rmtree
 
+# https://www.cboe.com/us/options/market_statistics/
+# https://ww2.cboe.com/us/options/market_statistics
+# https://www.cboe.com/markets/us/options/market-statistics/daily/?dt=2026-11-04
+DATA_URL = "https://cdn-api.cboe.com/api/us/options/market-statistics/cone-current-market-statistics.json"
 
-def polish_time_index(extracted_date, df):
-    df.index = extracted_date.isoformat() + " " + df.index
-    df.index = pd.to_datetime(df.index, format="%Y-%m-%d %I:%M %p")
+CATEGORIES = {
+    "total": "total_options",
+    "index": "index_options",
+    "equity": "equity_options",
+}
 
 
 def dump_data(
     extracted_date,
     dump_dir: Path,
     f_name_prefix: str,
-    raw_data,
+    rows
 ):
-    the_html: bytes = html.tostring(raw_data)
-    the_html_str: str = the_html.decode("utf-8")
-    html_path: Path = dump_dir / (f_name_prefix + ".html")
-    with open(html_path, mode="w", encoding="utf-8") as fd:
-        fd.write(the_html_str)
-    df = pd.read_html(html_path, index_col=0)[0]
-    # df = df.fillna(0)
-    df = df.dropna()
-    # if df.isnull().values.any():
-    #    raise ValueError(f"extracted dataframe contains unexpected NaN values: {df}")
-    polish_time_index(extracted_date, df)
+    df = pd.DataFrame(rows)
+    df = df.rename(columns={"calls": "CALLS", "puts": "PUTS", "total": "TOTAL"})
+    df["P/C RATIO"] = (df["PUTS"] / df["CALLS"]).round(2)
+    df = df.set_index("time")
+    df.index = extracted_date.isoformat() + " " + df.index
+    df.index = pd.to_datetime(df.index, format="%Y-%m-%d %H:%M")
+
+    df = df.rename_axis("TIME")
     col_transformation = {"CALLS": "int64", "PUTS": "int64", "TOTAL": "int64", "P/C RATIO": "float64"}
-    try:
-        df = df.astype({k: v for k, v in col_transformation.items() if k in df.columns})
-        df.to_csv(dump_dir / (f_name_prefix + ".tsv"), sep="\t", encoding="utf-8")
-    except ValueError as v:
-        # IntCastingNaNError
-        print(f"ERROR: Could not cast {df} with {col_transformation}; {v}")
+    df = df.astype(col_transformation)
+    df.to_csv(dump_dir / (f_name_prefix + ".tsv"), sep="\t", encoding="utf-8")
 
 
 def main():
@@ -45,40 +45,20 @@ def main():
 
     build_artifacts.mkdir()
 
-    # https://www.cboe.com/us/options/market_statistics/
-    page = requests.get("https://ww2.cboe.com/us/options/market_statistics")
-    content = html.fromstring(page.content)
+    page = requests.get(DATA_URL)
+    page.raise_for_status()
 
-    # raw_data
-    try:
-        extracted_date_str = content.xpath("/html/body/main/section[2]/div/h1/text()")[0]
-        extracted_date_str = extracted_date_str.replace("Cboe Exchange Market Statistics for ", "")
-        extracted_date = datetime.strptime(extracted_date_str, "%A, %B %d, %Y").date()
+    payload = page.json()
+    extracted_date_str = payload["trading_dt"]
+    extracted_date = datetime.strptime(extracted_date_str, "%Y-%m-%d").date()
 
-        raw_data = content.xpath("/html/body/main/section[2]/div")[0]
-        raw_data_as_html = html.tostring(raw_data)
+    with open(build_artifacts / f"{extracted_date}_market_statistics.json", mode="w", encoding="utf-8") as fd:
+        json.dump(payload, fd)
 
-        with open(build_artifacts / f"{extracted_date}_market_statistics.html", mode="w", encoding="utf-8") as fd:
-            fd.write(raw_data_as_html.decode("utf-8"))
-
-        if (
-                len(raw_data) == 9 and
-                raw_data[3].text == "Total" and
-                raw_data[5].text == "Index Options" and
-                raw_data[7].text == "Equity Options"
-        ):
-            dump_data(extracted_date, build_artifacts, "total_options", raw_data[4])
-            dump_data(extracted_date, build_artifacts, "index_options", raw_data[6])
-            dump_data(extracted_date, build_artifacts, "equity_options", raw_data[8])
-        else:
-            # The page structure is different to what we assume
-            raise ValueError(f"Unable to parse: {raw_data_as_html=}")
-    except IndexError as index_error:
-        # The page structure is different to what we assume
-        # Accessing content.xpath("...")[0] likely has caused this issue
-        raise ValueError(f"Unable to parse: {page.content=}") from index_error
+    for category, f_name_prefix in CATEGORIES.items():
+        rows = payload["data"][category]
+        dump_data(extracted_date, build_artifacts, f_name_prefix, rows)
 
 
 if __name__ == "__main__":
     main()
-
