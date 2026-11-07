@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
-            python-version: '3.13.8'
+            python-version: '3.13'
             architecture: 'x64'
       - name: Display Python version
         run: python --version
