@@ -53,7 +53,7 @@ def main():
     extracted_date = datetime.strptime(extracted_date_str, "%Y-%m-%d").date()
 
     with open(build_artifacts / f"{extracted_date}_market_statistics.json", mode="w", encoding="utf-8") as fd:
-        json.dump(payload, fd)
+        json.dump(payload, fd, indent=4)
 
     for category, f_name_prefix in CATEGORIES.items():
         rows = payload["data"][category]
